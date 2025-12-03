@@ -1,0 +1,194 @@
+<!-- Created with Jaspersoft Studio version 7.0.3.final using JasperReports Library version 7.0.3-41034ca841d452f3305ba55b9042260aaa1ab5dd  -->
+<jasperReport name="ReportePorIndiceStock" language="java" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ced95029-b569-4027-895c-af2843a4e088">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="SqlServer"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<style name="Title" fontName="Times New Roman" fontSize="50.0" bold="true"/>
+	<style name="SubTitle" forecolor="#736343" fontName="Arial" fontSize="18.0"/>
+	<style name="Column header" forecolor="#666666" fontName="Arial" fontSize="12.0" bold="true"/>
+	<style name="Detail" fontName="Arial" fontSize="12.0"/>
+	<style name="Row" mode="Transparent">
+		<conditionalStyle backcolor="#E6DAC3">
+			<conditionExpression><![CDATA[$V{REPORT_COUNT}%2 == 0]]></conditionExpression>
+		</conditionalStyle>
+	</style>
+	<style name="Style1">
+		<conditionalStyle mode="Opaque" forecolor="#FC1612" backcolor="rgba(255, 208, 207, 0.0)" bold="true">
+			<conditionExpression><![CDATA[$F{INDICE_STOCK_PORCENTUAL}.doubleValue() < 1.0]]></conditionExpression>
+		</conditionalStyle>
+		<conditionalStyle mode="Opaque" forecolor="#FF8B0F" backcolor="rgba(252, 227, 101, 0.0)" bold="true">
+			<conditionExpression><![CDATA[$F{INDICE_STOCK_PORCENTUAL}.doubleValue() >= 1.0 && $F{INDICE_STOCK_PORCENTUAL}.doubleValue() < 1.5]]></conditionExpression>
+		</conditionalStyle>
+		<conditionalStyle mode="Opaque" forecolor="#3D9434" backcolor="rgba(194, 255, 138, 0.0)" bold="true">
+			<conditionExpression><![CDATA[$F{INDICE_STOCK_PORCENTUAL}.doubleValue() >= 1.5]]></conditionExpression>
+		</conditionalStyle>
+	</style>
+	<query language="sql"><![CDATA[SELECT
+    PRODUCTO_ID,
+    NOMBRE,
+    STOCK AS STOCK_DISPONIBLE,
+    10 AS STOCK_MINIMO,
+    PRECIO, 
+    -- El resultado será un decimal entre 0.0 y X.X (ej. 0.2, 1.0, 1.2)
+    (CAST(STOCK AS DECIMAL(10, 2)) / 10.0) AS INDICE_STOCK_PORCENTUAL
+FROM
+    PRODUCTO
+WHERE
+    ESTADO = 'Activo'
+ORDER BY
+    INDICE_STOCK_PORCENTUAL ASC]]></query>
+	<field name="PRODUCTO_ID" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="PRODUCTO_ID"/>
+		<property name="com.jaspersoft.studio.field.label" value="PRODUCTO_ID"/>
+	</field>
+	<field name="NOMBRE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="NOMBRE"/>
+		<property name="com.jaspersoft.studio.field.label" value="NOMBRE"/>
+	</field>
+	<field name="STOCK_DISPONIBLE" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="STOCK_DISPONIBLE"/>
+		<property name="com.jaspersoft.studio.field.label" value="STOCK_DISPONIBLE"/>
+	</field>
+	<field name="STOCK_MINIMO" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="STOCK_MINIMO"/>
+		<property name="com.jaspersoft.studio.field.label" value="STOCK_MINIMO"/>
+	</field>
+	<field name="PRECIO" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="PRECIO"/>
+		<property name="com.jaspersoft.studio.field.label" value="PRECIO"/>
+	</field>
+	<field name="INDICE_STOCK_PORCENTUAL" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="INDICE_STOCK_PORCENTUAL"/>
+		<property name="com.jaspersoft.studio.field.label" value="INDICE_STOCK_PORCENTUAL"/>
+	</field>
+	<variable name="V_CRITICOS" calculation="Count" class="java.lang.Integer">
+		<expression><![CDATA[$F{INDICE_STOCK_PORCENTUAL}.doubleValue() < 1.0 ? $F{INDICE_STOCK_PORCENTUAL} : null]]></expression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<variable name="V_TOTAL_PRODUCTOS" calculation="Count" class="java.lang.Integer">
+		<expression><![CDATA[$F{PRODUCTO_ID}]]></expression>
+	</variable>
+	<variable name="V_PORCENTAJE_CRITICO" class="java.math.BigDecimal">
+		<expression><![CDATA[($V{V_TOTAL_PRODUCTOS}.intValue() > 0) ? new BigDecimal($V{V_CRITICOS}.doubleValue() / $V{V_TOTAL_PRODUCTOS}.doubleValue()) : new BigDecimal(0)]]></expression>
+	</variable>
+	<background splitType="Stretch"/>
+	<title height="139" splitType="Stretch">
+		<element kind="staticText" uuid="e7756c14-cc70-4954-80fd-709d75291103" x="207" y="101" width="196" height="22" fontName="Arial" style="SubTitle">
+			<text><![CDATA[Reporte de Indicadores]]></text>
+		</element>
+		<element kind="staticText" uuid="279071db-28e6-417e-a607-a57762a947f1" x="192" y="65" width="218" height="42" fontName="Arial" fontSize="10.0" hTextAlign="Center">
+			<text><![CDATA[RUC: 20541239876 | Teléfono: (01) 444-5555  Av. El Sol 150, Miraflores, Lima - Perú]]></text>
+		</element>
+		<element kind="staticText" uuid="89afbd83-93e9-4ff3-b7e9-9eb110e84f5c" x="155" y="0" width="290" height="62" fontName="Arial" fontSize="34.0" vTextAlign="Middle" style="Title">
+			<text><![CDATA[Aleyumy Sweet]]></text>
+		</element>
+	</title>
+	<pageHeader splitType="Stretch"/>
+	<columnHeader height="39" splitType="Stretch">
+		<element kind="line" uuid="1a61a836-d137-48b1-ad67-6ff64600bf93" positionType="FixRelativeToBottom" x="0" y="26" width="555" height="1">
+			<pen lineWidth="0.5" lineColor="#999999"/>
+		</element>
+		<element kind="staticText" uuid="21aa7624-f39b-4949-bab1-a2aedc2a8af7" x="4" y="5" width="100" height="20" fontName="Arial" fontSize="13.0" vTextAlign="Top">
+			<text><![CDATA[ID Producto]]></text>
+		</element>
+		<element kind="staticText" uuid="233870ae-307f-48ae-950c-0af7138a7dd5" x="77" y="6" width="100" height="21" fontName="Arial" fontSize="13.0" hTextAlign="Center">
+			<text><![CDATA[Producto]]></text>
+		</element>
+		<element kind="staticText" uuid="dc217989-1fbe-4bc2-a408-9149f00703a4" x="165" y="6" width="108" height="19" fontName="Arial" fontSize="13.0" hTextAlign="Center">
+			<text><![CDATA[Stock Disp.]]></text>
+		</element>
+		<element kind="staticText" uuid="f918d031-6797-4a51-b3b4-3dbbb3e770af" x="248" y="7" width="100" height="19" fontName="Arial" fontSize="13.0" hTextAlign="Center">
+			<text><![CDATA[Stock Mín.]]></text>
+		</element>
+		<element kind="staticText" uuid="a1556adb-dd8b-483b-a967-f1c4f269266a" x="451" y="8" width="100" height="19" fontName="Arial" fontSize="13.0" hTextAlign="Right">
+			<text><![CDATA[Índice de Stock (%)]]></text>
+		</element>
+		<element kind="staticText" uuid="03e10766-dd5d-4781-8c5e-a095e068ce13" x="346" y="7" width="134" height="18" fontName="Arial" fontSize="13.0">
+			<text><![CDATA[Valor Riesgo (S/.)]]></text>
+		</element>
+	</columnHeader>
+	<detail>
+		<band height="22" splitType="Stretch">
+			<element kind="frame" uuid="a98495d8-3c8d-4fa0-81f5-30c3efc2f766" mode="Opaque" x="0" y="0" width="555" height="20" style="Row">
+				<element kind="textField" uuid="3becbc40-d26c-4f7a-88a0-18d8c3f8ac44" x="-2" y="3" width="100" height="15" fontName="Arial" hTextAlign="Center">
+					<expression><![CDATA[$F{PRODUCTO_ID}]]></expression>
+				</element>
+				<element kind="textField" uuid="b303e752-4ba1-4914-a77a-f859c276227b" x="105" y="3" width="110" height="15" fontName="Arial">
+					<expression><![CDATA[$F{NOMBRE}]]></expression>
+				</element>
+				<element kind="textField" uuid="a40d0bd1-8371-43d5-aeae-c60a47a2bf44" x="184" y="1" width="70" height="19" fontName="Arial" hTextAlign="Center">
+					<expression><![CDATA[$F{STOCK_DISPONIBLE}]]></expression>
+				</element>
+				<element kind="textField" uuid="c05b1315-e671-4966-ba8c-f1e4b727ddc6" x="252" y="3" width="100" height="16" fontName="Arial" hTextAlign="Center">
+					<expression><![CDATA[$F{STOCK_MINIMO}]]></expression>
+				</element>
+				<element kind="textField" uuid="9d44571f-06c9-4ad4-b010-4e3c1f03c2a2" x="461" y="1" width="90" height="15" fontName="Arial" pattern="0.00 %" hTextAlign="Center" style="Style1">
+					<expression><![CDATA[$F{INDICE_STOCK_PORCENTUAL}]]></expression>
+				</element>
+				<element kind="textField" uuid="2dd91dd5-db8c-4467-9d61-a43cc501acce" x="358" y="1" width="100" height="14" fontName="Arial" pattern="#,##0.00" hTextAlign="Center">
+					<expression><![CDATA[($F{STOCK_DISPONIBLE}.intValue() < $F{STOCK_MINIMO}.intValue()) ? ($F{STOCK_MINIMO}.doubleValue() - $F{STOCK_DISPONIBLE}.doubleValue()) * $F{PRECIO}.doubleValue() : 0.00]]></expression>
+				</element>
+			</element>
+		</band>
+	</detail>
+	<columnFooter height="45" splitType="Stretch">
+		<element kind="line" uuid="fa45a887-615a-4d84-a2d7-8a2219671b3c" positionType="FixRelativeToBottom" x="0" y="3" width="555" height="1">
+			<pen lineWidth="0.5" lineColor="#999999"/>
+		</element>
+	</columnFooter>
+	<pageFooter height="25" splitType="Stretch">
+		<element kind="frame" uuid="183682bc-d976-4756-83e0-6625a3f98ed1" mode="Opaque" x="-21" y="1" width="597" height="24" forecolor="#D0B48E" backcolor="#F2EBDF">
+			<element kind="textField" uuid="0193f9b3-1559-491a-8580-b6988863b6a1" x="533" y="0" width="40" height="20" forecolor="#736343" fontName="Arial" fontSize="10.0" evaluationTime="Report" bold="false" vTextAlign="Middle" style="Column header">
+				<expression><![CDATA[" " + $V{PAGE_NUMBER}]]></expression>
+			</element>
+			<element kind="textField" uuid="d00b105e-494b-418b-8ac9-8b1b4824f4f0" x="453" y="0" width="80" height="20" forecolor="#736343" fontName="Arial" fontSize="10.0" bold="false" hTextAlign="Right" vTextAlign="Middle" style="Column header">
+				<expression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></expression>
+			</element>
+			<element kind="textField" uuid="0616f3fe-0354-456f-8911-ec30ec51a5ae" x="22" y="1" width="197" height="20" forecolor="#736343" fontName="Arial" fontSize="10.0" pattern="dd/MM/yyyy HH:mm" bold="false" vTextAlign="Middle" style="Column header">
+				<expression><![CDATA[new java.util.Date()]]></expression>
+			</element>
+		</element>
+	</pageFooter>
+	<summary height="224" splitType="Stretch">
+		<element kind="textField" uuid="37d1c87b-b50a-4cd3-a385-e4ed9e10c61f" x="20" y="40" width="307" height="120" fontSize="12.0" pattern="0.0 %">
+			<expression><![CDATA[($V{V_PORCENTAJE_CRITICO}.doubleValue() > 0.25 
+    ? "🚨 ¡ALERTA! El promedio de productos en nivel crítico es del " 
+    : "✅ TODO CORRECTO. El promedio de productos en nivel crítico es del ") 
++ new DecimalFormat("0.0%").format($V{V_PORCENTAJE_CRITICO}.doubleValue())]]></expression>
+		</element>
+		<element kind="chart" chartType="meter" uuid="2ad27956-686d-4cd1-8e84-84eeee14edad" x="340" y="20" width="200" height="190" evaluationTime="Master" linkType="None" linkTarget="Self" legendPosition="Bottom" titlePosition="Top">
+			<titleFont bold="false"/>
+			<subtitleFont bold="false"/>
+			<legendFont bold="true"/>
+			<titleExpression><![CDATA["Nivel de Riesgo de Stock"]]></titleExpression>
+			<dataset kind="value" resetType="None">
+				<valueExpression><![CDATA[new Double($V{V_PORCENTAJE_CRITICO}.doubleValue() * 100)]]></valueExpression>
+			</dataset>
+			<plot backcolor="rgba(240, 240, 240, 0.0)" backgroundAlpha="0.49" foregroundAlpha="0.81" shape="chord" units="" tickInterval="1.0" needleColor="#080101" meterColor="#DBDBDB">
+				<dataRange>
+					<lowExpression><![CDATA[1]]></lowExpression>
+					<highExpression><![CDATA[100]]></highExpression>
+				</dataRange>
+				<valueDisplay mask="0.0'%'"/>
+				<tickLabelFont fontName="Arial"/>
+				<interval label="Bajo Riesgo" backgroundColor="#93FF59" alpha="1.0">
+					<dataRange>
+						<lowExpression><![CDATA[0]]></lowExpression>
+						<highExpression><![CDATA[10]]></highExpression>
+					</dataRange>
+				</interval>
+				<interval label="Advertencia" backgroundColor="#FFCA4F" alpha="1.0">
+					<dataRange>
+						<lowExpression><![CDATA[10]]></lowExpression>
+						<highExpression><![CDATA[25]]></highExpression>
+					</dataRange>
+				</interval>
+				<interval label="Riesgo Crítico" backgroundColor="#FF615E" alpha="1.0">
+					<dataRange>
+						<lowExpression><![CDATA[25]]></lowExpression>
+						<highExpression><![CDATA[100]]></highExpression>
+					</dataRange>
+				</interval>
+			</plot>
+		</element>
+	</summary>
+</jasperReport>

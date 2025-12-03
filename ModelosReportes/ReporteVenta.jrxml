@@ -1,0 +1,201 @@
+<!-- Created with Jaspersoft Studio version 7.0.3.final using JasperReports Library version 7.0.3-41034ca841d452f3305ba55b9042260aaa1ab5dd  -->
+<jasperReport name="ReporteVenta" language="java" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ced95029-b569-4027-895c-af2843a4e088">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="AleyumySweet"/>
+	<import>java.math.RoundingMode</import>
+	<style name="Title" fontName="Times New Roman" fontSize="50.0" bold="true">
+		<box>
+			<pen lineColor="#FFFCF0"/>
+		</box>
+	</style>
+	<style name="SubTitle" forecolor="#736343" fontName="Arial" fontSize="18.0"/>
+	<style name="Column header" forecolor="#666666" fontName="Arial" fontSize="12.0" bold="true"/>
+	<style name="Detail" fontName="Arial" fontSize="12.0"/>
+	<style name="Row" mode="Transparent">
+		<conditionalStyle backcolor="#E6DAC3">
+			<conditionExpression><![CDATA[$V{REPORT_COUNT}%2 == 0]]></conditionExpression>
+		</conditionalStyle>
+	</style>
+	<parameter name="VENTA_ID" class="java.lang.String"/>
+	<query language="sql"><![CDATA[SELECT
+    -- Campos del Detalle (para la banda Detail)
+    DP.CANTIDAD AS CANTIDAD,              -- Cantidad vendida (es el valor que te faltaba)
+    P.NOMBRE AS NOMBRE_PRODUCTO,          -- Nombre del producto
+    DP.PRECIO_UNIT AS PRECIO_UNITARIO,    -- Precio unitario usado en la venta
+    DP.SUBTOTAL AS SUBTOTAL_LINEA,        -- Subtotal por línea (Cantidad * Precio_Unit)
+    
+    -- Campos de la Cabecera (para la banda Page/Column Header)
+    PE.VENTA_ID AS VENTA_ID,
+    PE.FECHA_VENTA AS FECHA_VENTA,
+    PE.METODO_PAGO AS METODO_PAGO,
+    PE.TOTAL AS TOTAL_GENERAL_DB          -- Total final de la venta (para la validación)
+FROM
+    PEDIDO PE
+JOIN
+    DETALLE_PEDIDO DP ON PE.VENTA_ID = DP.VENTA_ID
+JOIN
+    PRODUCTO P ON DP.PRODUCTO_ID = P.PRODUCTO_ID
+WHERE
+    PE.VENTA_ID = $P{VENTA_ID}]]></query>
+	<field name="CANTIDAD" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="CANTIDAD"/>
+		<property name="com.jaspersoft.studio.field.label" value="CANTIDAD"/>
+	</field>
+	<field name="NOMBRE_PRODUCTO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="NOMBRE_PRODUCTO"/>
+		<property name="com.jaspersoft.studio.field.label" value="NOMBRE_PRODUCTO"/>
+	</field>
+	<field name="PRECIO_UNITARIO" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="PRECIO_UNITARIO"/>
+		<property name="com.jaspersoft.studio.field.label" value="PRECIO_UNITARIO"/>
+	</field>
+	<field name="SUBTOTAL_LINEA" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="SUBTOTAL_LINEA"/>
+		<property name="com.jaspersoft.studio.field.label" value="SUBTOTAL_LINEA"/>
+	</field>
+	<field name="VENTA_ID" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="VENTA_ID"/>
+		<property name="com.jaspersoft.studio.field.label" value="VENTA_ID"/>
+	</field>
+	<field name="FECHA_VENTA" class="java.sql.Date">
+		<property name="com.jaspersoft.studio.field.name" value="FECHA_VENTA"/>
+		<property name="com.jaspersoft.studio.field.label" value="FECHA_VENTA"/>
+	</field>
+	<field name="METODO_PAGO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="METODO_PAGO"/>
+		<property name="com.jaspersoft.studio.field.label" value="METODO_PAGO"/>
+	</field>
+	<field name="TOTAL_GENERAL_DB" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="TOTAL_GENERAL_DB"/>
+		<property name="com.jaspersoft.studio.field.label" value="TOTAL_GENERAL_DB"/>
+	</field>
+	<variable name="VAR_SUBTOTAL_NETO" class="java.math.BigDecimal">
+		<expression><![CDATA[$F{TOTAL_GENERAL_DB}.divide(new java.math.BigDecimal(1.18), 2, java.math.RoundingMode.HALF_UP)]]></expression>
+	</variable>
+	<variable name="VAR_IGV" class="java.math.BigDecimal">
+		<expression><![CDATA[$F{TOTAL_GENERAL_DB}.subtract($V{VAR_SUBTOTAL_NETO})]]></expression>
+	</variable>
+	<variable name="V_TOTAL_GENERAL" class="java.math.BigDecimal">
+		<expression><![CDATA[$F{TOTAL_GENERAL_DB}]]></expression>
+	</variable>
+	<background splitType="Stretch"/>
+	<title height="136" splitType="Stretch">
+		<element kind="staticText" uuid="1a652692-054a-40f3-ade5-68d8da36626d" x="170" y="0" width="290" height="62" fontSize="34.0" vTextAlign="Middle" style="Title">
+			<text><![CDATA[Aleyumy Sweet]]></text>
+		</element>
+		<element kind="staticText" uuid="88d4231e-f014-4b0d-b871-1737ba63a1ae" x="212" y="60" width="196" height="22" fontName="Times New Roman" style="SubTitle">
+			<text><![CDATA[Reporte de Venta]]></text>
+		</element>
+		<element kind="staticText" uuid="f0bfb1ea-a85a-47cd-a1a4-43f22b45e80f" x="170" y="91" width="218" height="42" fontSize="10.0" hTextAlign="Center">
+			<text><![CDATA[RUC: 20541239876 | Teléfono: (01) 444-5555  Av. El Sol 150, Miraflores, Lima - Perú]]></text>
+		</element>
+		<element kind="image" uuid="8acbd95d-bddd-4437-b281-bb028595a52b" x="10" y="8" width="151" height="121">
+			<expression><![CDATA["C:/Users/josem/OneDrive/Imágenes/AleyumyIcono.png"]]></expression>
+		</element>
+		<property name="com.jaspersoft.studio.layout"/>
+	</title>
+	<pageHeader height="40" splitType="Stretch">
+		<element kind="staticText" uuid="39b81ddd-1cca-4e50-8e47-a8fcf463cab5" x="1" y="0" width="100" height="30" fontName="Times New Roman" fontSize="11.0" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[Número del Pedido]]></text>
+		</element>
+		<element kind="textField" uuid="f18a6ade-a039-4f40-ae5c-df8192585ddb" x="108" y="0" width="100" height="30" linkType="None" linkTarget="Self" removeLineWhenBlank="true" vTextAlign="Middle">
+			<expression><![CDATA[$F{VENTA_ID}]]></expression>
+		</element>
+		<element kind="textField" uuid="f60b29fc-a893-4f95-8d54-7497efbf9234" x="439" y="0" width="99" height="30" vTextAlign="Middle">
+			<expression><![CDATA[$F{FECHA_VENTA}]]></expression>
+			<patternExpression><![CDATA["dd/MM/yyyy"]]></patternExpression>
+		</element>
+		<element kind="staticText" uuid="b48b8c1c-e8c1-43d4-8636-b10435042b6f" x="212" y="8" width="100" height="30" fontName="Times New Roman" fontSize="11.0">
+			<text><![CDATA[Metodo pago]]></text>
+		</element>
+		<element kind="textField" uuid="9470b263-0823-4a35-a2c2-674c49e75252" x="280" y="5" width="100" height="20" vTextAlign="Middle">
+			<expression><![CDATA[$F{METODO_PAGO}]]></expression>
+		</element>
+		<element kind="staticText" uuid="802912c6-91a0-404d-9cb7-06628dce81a4" x="390" y="0" width="44" height="30" fontName="Times New Roman" fontSize="11.0" vTextAlign="Middle">
+			<text><![CDATA[Fecha]]></text>
+		</element>
+	</pageHeader>
+	<columnHeader height="44" splitType="Stretch">
+		<element kind="staticText" uuid="dd492326-ddf3-4cfc-b44b-2166e4e41f33" x="30" y="9" width="100" height="30" fontName="Arial" fontSize="13.0" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[Producto]]></text>
+		</element>
+		<element kind="staticText" uuid="ec24736d-b5ef-433f-b11f-222db5d223b8" x="432" y="8" width="100" height="30" fontName="Arial" fontSize="13.0" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[Subtotal]]></text>
+		</element>
+		<element kind="staticText" uuid="b3c21bcb-297e-4c7e-b7c2-11d80253a3c4" x="308" y="8" width="100" height="30" fontName="Arial" fontSize="13.0" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[Cantidad]]></text>
+		</element>
+		<element kind="staticText" uuid="b943a852-7aab-42e0-9d94-133de00b5595" x="170" y="9" width="100" height="30" fontName="Arial" fontSize="13.0" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[Precio Unit]]></text>
+		</element>
+		<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+	</columnHeader>
+	<detail>
+		<band height="43">
+			<element kind="textField" uuid="d17557e9-f28b-4633-b415-d6b9687714ac" x="45" y="5" width="110" height="30" hTextAlign="Justified" vTextAlign="Middle">
+				<expression><![CDATA[$F{NOMBRE_PRODUCTO}]]></expression>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0"/>
+			</element>
+			<element kind="textField" uuid="e2f51057-ac10-45fa-81eb-742ddb2ca7ff" x="190" y="6" width="100" height="30" hTextAlign="Left" vTextAlign="Middle">
+				<expression><![CDATA[$F{PRECIO_UNITARIO}]]></expression>
+				<patternExpression><![CDATA["S/ #,##0.00"]]></patternExpression>
+			</element>
+			<element kind="textField" uuid="dc3416b7-9308-4c65-924d-620d3aae641d" x="305" y="6" width="100" height="30" hTextAlign="Center" vTextAlign="Middle">
+				<expression><![CDATA[$F{CANTIDAD}]]></expression>
+			</element>
+			<element kind="textField" uuid="18a9eb5c-dbba-47e1-899b-cfc15df6e2eb" stretchType="NoStretch" x="454" y="6" width="100" height="30" hTextAlign="Left" vTextAlign="Middle">
+				<expression><![CDATA[$F{PRECIO_UNITARIO}.multiply(new java.math.BigDecimal($F{CANTIDAD}))]]></expression>
+				<patternExpression><![CDATA["S/ #,##0.00"]]></patternExpression>
+			</element>
+		</band>
+	</detail>
+	<pageFooter height="18" splitType="Stretch">
+		<element kind="frame" uuid="183682bc-d976-4756-83e0-6625a3f98ed1" mode="Opaque" x="-20" y="0" width="597" height="18" forecolor="#D0B48E" backcolor="#F2EBDF">
+			<element kind="textField" uuid="d00b105e-494b-418b-8ac9-8b1b4824f4f0" x="420" y="0" width="130" height="18" forecolor="#736343" fontSize="10.0" bold="false" hTextAlign="Right" vTextAlign="Middle" style="Column header">
+				<expression><![CDATA["Página " + $V{PAGE_NUMBER} + " de " + $V{PAGE_COUNT}]]></expression>
+			</element>
+			<element kind="textField" uuid="0616f3fe-0354-456f-8911-ec30ec51a5ae" x="22" y="0" width="197" height="18" forecolor="#736343" fontSize="10.0" pattern="dd/MM/yyyy HH:mm" bold="false" vTextAlign="Middle" style="Column header">
+				<expression><![CDATA[new java.util.Date()]]></expression>
+			</element>
+		</element>
+	</pageFooter>
+	<summary height="100" splitType="Immediate">
+		<element kind="staticText" uuid="23bd459c-b719-46da-a12b-251f5282b931" x="310" y="5" width="96" height="18" fontName="Arial" fontSize="14.0" hTextAlign="Right" vTextAlign="Middle">
+			<text><![CDATA[Subtotal Neto]]></text>
+		</element>
+		<element kind="textField" uuid="b927a925-6a40-4142-b003-0ef62b89fa60" x="430" y="5" width="90" height="18" pattern="S/ #,##0.00" hTextAlign="Right" vTextAlign="Middle">
+			<expression><![CDATA[$V{VAR_SUBTOTAL_NETO}]]></expression>
+		</element>
+		<element kind="staticText" uuid="cabbe1bd-4ca0-40cc-8022-6ccc5fd875ef" x="308" y="26" width="100" height="18" fontName="Arial" fontSize="13.0" hTextAlign="Right" vTextAlign="Middle">
+			<text><![CDATA[IGV (18%)]]></text>
+		</element>
+		<element kind="textField" uuid="3852c403-a23b-4f3b-a04e-ca41ee4ad4f1" x="430" y="26" width="90" height="18" pattern="S/ #,##0.00" hTextAlign="Right" vTextAlign="Middle">
+			<expression><![CDATA[$V{VAR_IGV}]]></expression>
+		</element>
+		<element kind="staticText" uuid="ac3cb14f-ab27-4aed-af1d-41ea3451f3ef" x="310" y="45" width="100" height="20" fontName="Arial" fontSize="15.0" hTextAlign="Right" vTextAlign="Middle">
+			<text><![CDATA[Total General]]></text>
+		</element>
+		<element kind="textField" uuid="57793937-5d68-4dfe-a602-d31cbd6d3ce3" x="430" y="45" width="90" height="20" pattern="S/ #,##0.00" hTextAlign="Right" vTextAlign="Middle">
+			<expression><![CDATA[$V{V_TOTAL_GENERAL}]]></expression>
+		</element>
+		<element kind="staticText" uuid="06a4c72a-c00d-4e6e-9b9a-de1f3f7556fb" x="110" y="82" width="345" height="14" fontName="Arial" fontSize="11.0" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[Gracias por su compra]]></text>
+			<box>
+				<pen lineWidth="0.0" lineStyle="Solid" lineColor="#736343"/>
+				<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#736343"/>
+				<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#736343"/>
+				<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#736343"/>
+				<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#736343"/>
+			</box>
+		</element>
+		<element kind="rectangle" uuid="d945803f-fc74-44d1-a535-6fd087573d8c" mode="Transparent" x="310" y="5" width="220" height="18">
+			<pen lineWidth="0.3"/>
+		</element>
+		<element kind="rectangle" uuid="307aae1d-6656-4dfd-8df1-51f1ff9a0182" mode="Transparent" x="310" y="23" width="220" height="22">
+			<pen lineWidth="0.3"/>
+		</element>
+		<element kind="rectangle" uuid="5b18235a-fe13-4dc0-9bc6-53e77e0a6209" mode="Transparent" x="310" y="46" width="220" height="20">
+			<pen lineWidth="0.8" lineStyle="Double"/>
+		</element>
+	</summary>
+</jasperReport>

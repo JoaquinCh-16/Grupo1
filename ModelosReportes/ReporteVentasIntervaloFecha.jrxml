@@ -1,0 +1,132 @@
+<!-- Created with Jaspersoft Studio version 7.0.3.final using JasperReports Library version 7.0.3-41034ca841d452f3305ba55b9042260aaa1ab5dd  -->
+<jasperReport name="ReporteVentasFecha" language="java" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ced95029-b569-4027-895c-af2843a4e088">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="aleyumi"/>
+	<style name="Title" fontName="Arial" fontSize="50.0" bold="true"/>
+	<style name="SubTitle" forecolor="#736343" fontName="Arial" fontSize="18.0"/>
+	<style name="Column header" forecolor="#666666" fontName="Arial" fontSize="12.0" bold="true"/>
+	<style name="Detail" fontName="Arial" fontSize="12.0"/>
+	<style name="Row" mode="Transparent">
+		<conditionalStyle backcolor="#E6DAC3">
+			<conditionExpression><![CDATA[$V{REPORT_COUNT}%2 == 0]]></conditionExpression>
+		</conditionalStyle>
+	</style>
+	<parameter name="FECHA_INICIO" class="java.sql.Date"/>
+	<parameter name="FECHA_FIN" class="java.sql.Date"/>
+	<query language="sql"><![CDATA[SELECT
+    P.VENTA_ID AS VENTA_ID,
+    P.FECHA_VENTA AS FECHA_VENTA,
+    P.COMPRADOR AS COMPRADOR,
+    P.TOTAL AS TOTAL_VENTA,
+    P.METODO_PAGO AS METODO_PAGO,
+    PE.NOMBRE AS NOMBRE_PERSONAL
+FROM PEDIDO P
+JOIN PERSONAL PE ON P.PERSONAL_ID = PE.PERSONAL_ID
+WHERE P.FECHA_VENTA BETWEEN $P{FECHA_INICIO} AND $P{FECHA_FIN}
+ORDER BY P.VENTA_ID ASC
+]]></query>
+	<field name="VENTA_ID" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="VENTA_ID"/>
+		<property name="com.jaspersoft.studio.field.label" value="VENTA_ID"/>
+	</field>
+	<field name="FECHA_VENTA" class="java.sql.Date">
+		<property name="com.jaspersoft.studio.field.name" value="FECHA_VENTA"/>
+		<property name="com.jaspersoft.studio.field.label" value="FECHA_VENTA"/>
+	</field>
+	<field name="COMPRADOR" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="COMPRADOR"/>
+		<property name="com.jaspersoft.studio.field.label" value="COMPRADOR"/>
+	</field>
+	<field name="TOTAL_VENTA" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="TOTAL_VENTA"/>
+		<property name="com.jaspersoft.studio.field.label" value="TOTAL_VENTA"/>
+	</field>
+	<field name="METODO_PAGO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="METODO_PAGO"/>
+		<property name="com.jaspersoft.studio.field.label" value="METODO_PAGO"/>
+	</field>
+	<field name="NOMBRE_PERSONAL" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="NOMBRE_PERSONAL"/>
+		<property name="com.jaspersoft.studio.field.label" value="NOMBRE_PERSONAL"/>
+	</field>
+	<variable name="TOTAL_DIA" calculation="Sum" class="java.math.BigDecimal">
+		<expression><![CDATA[$F{TOTAL_VENTA}]]></expression>
+	</variable>
+	<background splitType="Stretch"/>
+	<title height="155" splitType="Stretch">
+		<element kind="staticText" uuid="36301ae3-0fab-490b-bae8-fc4c50aa2b84" x="203" y="100" width="217" height="22" fontName="Arial" style="SubTitle">
+			<text><![CDATA[Reporte Diario de Ventas]]></text>
+		</element>
+		<element kind="textField" uuid="c65b1e48-268e-4b78-8a3e-a9ffcdfe1607" x="100" y="130" width="150" height="20" fontName="Arial" pattern="dd/MM/yyyy" hTextAlign="Center">
+			<expression><![CDATA[$P{FECHA_INICIO}]]></expression>
+		</element>
+		<element kind="staticText" uuid="b817adf8-dda1-4606-b73e-e18e7b7c3cb0" x="190" y="60" width="218" height="31" fontName="Arial" hTextAlign="Center">
+			<text><![CDATA[RUC: 20541239876 | Teléfono: (01) 444-5555  Av. El Sol 150, Miraflores, Lima - Perú]]></text>
+		</element>
+		<element kind="staticText" uuid="29d05c9f-2116-4f5b-9f11-d725230072b9" x="165" y="0" width="290" height="62" fontSize="34.0" vTextAlign="Middle" style="Title">
+			<text><![CDATA[Aleyumy Sweet]]></text>
+		</element>
+		<element kind="textField" uuid="89956ed7-1bb6-4223-8393-efa310df164b" x="320" y="130" width="150" height="20" fontName="Arial" pattern="dd/MM/yyyy" hTextAlign="Center">
+			<expression><![CDATA[$P{FECHA_FIN}]]></expression>
+		</element>
+	</title>
+	<pageHeader splitType="Stretch"/>
+	<columnHeader height="30" splitType="Stretch">
+		<element kind="staticText" uuid="b330326d-1545-4f99-af7f-59707f974938" x="0" y="0" width="100" height="30" fontName="Arial" hTextAlign="Center" vTextAlign="Top">
+			<text><![CDATA[ID Pedido]]></text>
+		</element>
+		<element kind="staticText" uuid="355348f2-e643-41b0-ae25-e0d8ec2970c8" x="440" y="0" width="100" height="30" fontName="Arial" hTextAlign="Center" vTextAlign="Top">
+			<text><![CDATA[Total Venta]]></text>
+		</element>
+		<element kind="staticText" uuid="9c9e1f7a-e1a6-45af-bc53-11c49e75bfae" x="327" y="0" width="100" height="30" fontName="Arial" hTextAlign="Center" vTextAlign="Top">
+			<text><![CDATA[Vendedor]]></text>
+		</element>
+		<element kind="staticText" uuid="c29fad91-f410-4d41-86fa-47ff802ac81f" x="220" y="0" width="100" height="30" fontName="Arial" hTextAlign="Center" vTextAlign="Top">
+			<text><![CDATA[Método Pago]]></text>
+		</element>
+		<element kind="staticText" uuid="7ecfbe38-1536-4e75-8f30-dac212fa1465" x="114" y="0" width="100" height="30" fontName="Arial" hTextAlign="Center" vTextAlign="Top">
+			<text><![CDATA[Comprador]]></text>
+		</element>
+		<element kind="line" uuid="1a61a836-d137-48b1-ad67-6ff64600bf93" positionType="FixRelativeToBottom" x="0" y="18" width="555" height="1">
+			<pen lineWidth="0.5" lineColor="#999999"/>
+		</element>
+	</columnHeader>
+	<detail>
+		<band height="23" splitType="Stretch">
+			<element kind="frame" uuid="a98495d8-3c8d-4fa0-81f5-30c3efc2f766" mode="Opaque" x="0" y="0" width="555" height="22" style="Row">
+				<element kind="textField" uuid="289892ae-0450-4b26-9b63-d38de20d8d53" x="117" y="0" width="100" height="22" fontName="Arial" pattern="S/ #,##0.00" hTextAlign="Center" vTextAlign="Middle">
+					<expression><![CDATA[$F{COMPRADOR}]]></expression>
+				</element>
+				<element kind="textField" uuid="e06ed66d-73b6-4c41-b7e3-24c71a7ce2c1" x="229" y="0" width="100" height="22" fontName="Arial" hTextAlign="Center" vTextAlign="Middle">
+					<expression><![CDATA[$F{METODO_PAGO}]]></expression>
+				</element>
+				<element kind="textField" uuid="7e4716c3-5788-46b0-998e-789ed8663cac" x="341" y="0" width="99" height="22" fontName="Arial" pattern="S/ #,##0.00" hTextAlign="Center" vTextAlign="Middle">
+					<expression><![CDATA[$F{NOMBRE_PERSONAL}]]></expression>
+				</element>
+				<element kind="textField" uuid="f412651c-57d1-4a39-9e79-479bf105fbba" x="455" y="0" width="100" height="22" fontName="Arial" pattern="S/ #,##0.00" hTextAlign="Center" vTextAlign="Middle">
+					<expression><![CDATA[$F{TOTAL_VENTA}]]></expression>
+				</element>
+				<element kind="textField" uuid="a33e7121-8d6a-4e56-9324-6acbeb4cc6e8" x="15" y="0" width="100" height="22" fontName="Arial" pattern="S/ #,##0.00" hTextAlign="Center" vTextAlign="Middle">
+					<expression><![CDATA[$F{VENTA_ID}]]></expression>
+				</element>
+			</element>
+		</band>
+	</detail>
+	<columnFooter height="45" splitType="Stretch">
+		<element kind="line" uuid="fa45a887-615a-4d84-a2d7-8a2219671b3c" positionType="FixRelativeToBottom" x="0" y="3" width="555" height="1">
+			<pen lineWidth="0.5" lineColor="#999999"/>
+		</element>
+	</columnFooter>
+	<pageFooter height="25" splitType="Stretch"/>
+	<summary height="52" splitType="Stretch">
+		<element kind="staticText" uuid="db2dd510-bc20-4a8c-9214-f2f8b919d133" x="150" y="12" width="114" height="23" fontName="Arial" hTextAlign="Left" vTextAlign="Middle">
+			<text><![CDATA[Total Ventas del Día:]]></text>
+		</element>
+		<element kind="textField" uuid="35ff4be4-2a9a-4b3c-a45f-588b93c555bb" mode="Opaque" x="280" y="12" width="130" height="22" forecolor="#030303" backcolor="rgba(242, 235, 223, 0.60784316)" fontName="Arial" pattern="S/ #,##0.00" hTextAlign="Center" vTextAlign="Middle">
+			<expression><![CDATA[$V{TOTAL_DIA}]]></expression>
+			<box>
+				<pen lineWidth="0.5"/>
+			</box>
+		</element>
+	</summary>
+</jasperReport>
