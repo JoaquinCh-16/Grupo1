@@ -16,7 +16,7 @@ import java.util.List;
 public class ProductoController {
 
   
-    private ProductoDAO productoDAO;
+   private ProductoDAO productoDAO;
 
     public ProductoController() {
     this.productoDAO = new ProductoDAO(); // ← esto inicializa el objeto
@@ -36,7 +36,10 @@ public class ProductoController {
         Producto producto = new Producto(productoId, nombre, estado, precio, stock, categoria);
         return productoDAO.editarProducto(producto);
     }
-
+    // Método para editar un producto
+    public boolean editarStockProducto(String productoId, int nuevoStock) throws SQLException {
+        return productoDAO.actualizarStock(productoId, nuevoStock);
+    }
     // Método para eliminar un producto
     public boolean eliminarProducto(String productoId) throws SQLException {
         return productoDAO.eliminarProducto(productoId);

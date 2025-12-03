@@ -16,10 +16,9 @@ public class Producto {
     private int stock;
     private String categoria;
 
-    // Constructor vacío
     public Producto() {}
 
-    // Constructor con parámetros
+   
     public Producto(String productoId, String nombre, String estado, double precio, int stock, String categoria) {
         this.productoId = productoId;
         this.nombre = nombre;

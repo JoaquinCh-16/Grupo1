@@ -20,13 +20,14 @@ import util.ConexionBD;
  * @author Usuario
  */
 public class ProductoDAO {
-    public boolean agregarProducto(Producto producto) throws SQLException{
+
+    public boolean agregarProducto(Producto producto) throws SQLException {
         Connection conn = ConexionBD.getConnection();
-        if(conn == null){
+        if (conn == null) {
             return false;
-        }else{
+        } else {
             String sql = "{CALL SP_AGREGAR_PRODUCTO(?, ?, ?, ?, ?, ?)}";
-            try(CallableStatement cs = conn.prepareCall(sql)){
+            try (CallableStatement cs = conn.prepareCall(sql)) {
                 cs.setString(1, producto.getProductoId());
                 cs.setString(2, producto.getNombre());
                 cs.setString(3, producto.getEstado());
@@ -35,16 +36,15 @@ public class ProductoDAO {
                 cs.setString(6, producto.getCategoria());
                 cs.execute();
                 return true;
-            }catch(SQLException e){
+            } catch (SQLException e) {
                 e.printStackTrace();
                 return false;
-            }finally{
+            } finally {
                 conn.close();
             }
         }
     }
 
-    
     public boolean editarProducto(Producto producto) throws SQLException {
         Connection conn = ConexionBD.getConnection();
         if (conn == null) {
@@ -69,12 +69,47 @@ public class ProductoDAO {
         }
     }
 
+    public boolean actualizarStock(String productoId, int nuevoStock) {
+        String sql = "{CALL SP_ActualizarStock(?, ?)}";
+        try (Connection conn = ConexionBD.getConnection(); CallableStatement cs = conn.prepareCall(sql)) {
+            cs.setString(1, productoId);
+            cs.setInt(2, nuevoStock);
+            cs.execute();
+            return true;
+
+        } catch (SQLException e) {
+            System.err.println("Error al actualizar stock: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean editarEstado(String productoId, String nuevoEstado) throws SQLException {
+        Connection conn = ConexionBD.getConnection();
+        if (conn == null) {
+            return false;
+        } else {
+            String sql = "{CALL SP_ACTUALIZAR_ESTADO(?, ?)}";
+            try (CallableStatement cs = conn.prepareCall(sql)) {
+                cs.setString(1, productoId);
+                cs.setString(2, nuevoEstado != null ? nuevoEstado : "");
+
+                cs.execute();
+                return true;
+            } catch (SQLException e) {
+                e.printStackTrace();
+                return false;
+            } finally {
+                conn.close();
+            }
+        }
+    }
+
     public boolean eliminarProducto(String productoId) throws SQLException {
         Connection conn = ConexionBD.getConnection();
         if (conn == null) {
             return false;
         } else {
-            String sql = "{CALL SP_ELIMINARPRODUCTO(?)}";
+            String sql = "{CALL SP_ELIMINAR_PRODUCTO(?)}";
             try (CallableStatement cs = conn.prepareCall(sql)) {
                 cs.setString(1, productoId);
                 cs.execute();
@@ -88,13 +123,11 @@ public class ProductoDAO {
         }
     }
 
-
     public Producto buscarProductoPorId(String productoId) {
         Producto producto = null;
         String sql = "SELECT PRODUCTO_ID, NOMBRE, ESTADO, PRECIO, STOCK, CATEGORIA FROM PRODUCTO WHERE PRODUCTO_ID = ?";
 
-        try (Connection conn = ConexionBD.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection conn = ConexionBD.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, productoId);
             try (ResultSet rs = stmt.executeQuery()) {
@@ -113,15 +146,15 @@ public class ProductoDAO {
         }
         return producto;
     }
-    
+
     public List<Producto> listar() {
         List<Producto> productos = new ArrayList<>();
 
-        String sql = "SELECT PRODUCTO_ID, NOMBRE, ESTADO, PRECIO, STOCK, CATEGORIA FROM Producto";
+        // Solo traer productos activos
+        String sql = "SELECT PRODUCTO_ID, NOMBRE, ESTADO, PRECIO, STOCK, CATEGORIA "
+                + "FROM Producto WHERE ESTADO = 'Activo'";
 
-        try (Connection conn = ConexionBD.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
+        try (Connection conn = ConexionBD.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
                 Producto p = new Producto();
@@ -141,35 +174,33 @@ public class ProductoDAO {
         }
         return productos;
     }
+
     public String obtenerUltimoProductoId() {
-    String ultimoId = "PR000"; // Valor inicial por defecto
-    Connection conn = ConexionBD.getConnection();
-    if (conn == null) return ultimoId;
-
-    try (Statement stmt = conn.createStatement();
-         ResultSet rs = stmt.executeQuery("SELECT MAX(PRODUCTO_ID) AS ultimo FROM PRODUCTO")) {
-
-        if (rs.next() && rs.getString("ultimo") != null) {
-            ultimoId = rs.getString("ultimo");
+        String ultimoId = "PR000"; // Valor inicial por defecto
+        Connection conn = ConexionBD.getConnection();
+        if (conn == null) {
+            return ultimoId;
         }
 
-    } catch (SQLException e) {
-        e.printStackTrace();
-    } finally {
-        try { if (conn != null) conn.close(); } catch (SQLException e) { e.printStackTrace(); }
+        try (Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery("SELECT MAX(PRODUCTO_ID) AS ultimo FROM PRODUCTO")) {
+
+            if (rs.next() && rs.getString("ultimo") != null) {
+                ultimoId = rs.getString("ultimo");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return ultimoId;
     }
 
-    return ultimoId;
-}
-
-
-
-    
-    
- 
-    
-    
-    
-    
-    
 }
